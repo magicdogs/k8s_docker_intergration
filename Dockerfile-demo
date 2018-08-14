@@ -1,0 +1,9 @@
+FROM ubuntu
+MAINTAINER symagic "80099856@qq.com"
+RUN mkdir -p /data/webapp
+ADD jdk-8u112-linux-x64.tar.gz /data/jdk/
+COPY web-tools-1.0.0-SNAPSHOT.jar /data/webapp/
+ENV JAVA_HOME /data/jdk/jdk1.8.0_112
+ENV PATH $PATH:$JAVA_HOME/bin
+EXPOSE 8080
+CMD ["java","-jar","/data/webapp/web-tools-1.0.0-SNAPSHOT.jar"]
