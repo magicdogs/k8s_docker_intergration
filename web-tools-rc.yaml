@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: web-tools
+  labels:
+    name: web-tools
+spec:
+  replicas: 3
+  selector:
+    name: web-tools
+  template:
+    metadata:
+     labels:
+       name: web-tools
+    spec:
+     containers:
+     - name: web-tools
+       image: registry.cn-shenzhen.aliyuncs.com/symagic/web-tools:1.0.0
+       ports:
+       - containerPort: 8080
+
