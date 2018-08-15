@@ -163,3 +163,234 @@ root@ubuntu:~/dockerfile# kubectl logs -f web-tools-fgn6l
 2018-08-15 08:44:50.060  INFO 1 --- [ost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Servlet dispatcherServlet mapped to [/]
 
 
+
+
+kubectl http api describe
+https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/   doc link
+
+
+删除service资源
+DELETE http://192.168.150.236:8080/api/v1/namespaces/default/services/web-tools
+Result:
+{
+    "kind": "Status",
+    "apiVersion": "v1",
+    "metadata": {},
+    "status": "Success",
+    "details": {
+        "name": "web-tools",
+        "kind": "services",
+        "uid": "9e9086f6-a06a-11e8-b553-0800273b822e"
+    }
+}
+
+创建service资源
+POST http://192.168.150.236:8080/api/v1/namespaces/default/services
+Content-Type: application/yaml
+text
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-tools
+  labels:
+    name: web-tools
+spec:
+  type: NodePort 
+  ports:
+  - port: 80
+    nodePort: 8008
+  selector:
+    name: web-tools
+	
+Result:
+{
+    "kind": "Service",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "web-tools",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/services/web-tools",
+        "uid": "9e9086f6-a06a-11e8-b553-0800273b822e",
+        "resourceVersion": "230857",
+        "creationTimestamp": "2018-08-15T09:07:22Z",
+        "labels": {
+            "name": "web-tools"
+        }
+    },
+    "spec": {
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 80,
+                "targetPort": 80,
+                "nodePort": 8008
+            }
+        ],
+        "selector": {
+            "name": "web-tools"
+        },
+        "clusterIP": "170.170.22.101",
+        "type": "NodePort",
+        "sessionAffinity": "None",
+        "externalTrafficPolicy": "Cluster"
+    },
+    "status": {
+        "loadBalancer": {}
+    }
+}
+
+创建副本资源
+POST http://192.168.150.236:8080/api/v1/namespaces/default/replicationcontrollers
+Content-Type: application/yaml
+text
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: web-tools
+  labels:
+    name: web-tools
+spec:
+  replicas: 3
+  selector:
+    name: web-tools
+  template:
+    metadata:
+     labels:
+       name: web-tools
+    spec:
+     containers:
+     - name: web-tools
+       image: registry.cn-shenzhen.aliyuncs.com/symagic/web-tools:1.0.0
+       ports:
+       - containerPort: 8080
+
+Result:
+{
+    "kind": "ReplicationController",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "web-tools",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/replicationcontrollers/web-tools",
+        "uid": "4268f4a6-a06c-11e8-b553-0800273b822e",
+        "resourceVersion": "231856",
+        "generation": 1,
+        "creationTimestamp": "2018-08-15T09:19:06Z",
+        "labels": {
+            "name": "web-tools"
+        }
+    },
+    "spec": {
+        "replicas": 3,
+        "selector": {
+            "name": "web-tools"
+        },
+        "template": {
+            "metadata": {
+                "creationTimestamp": null,
+                "labels": {
+                    "name": "web-tools"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "web-tools",
+                        "image": "registry.cn-shenzhen.aliyuncs.com/symagic/web-tools:1.0.0",
+                        "ports": [
+                            {
+                                "containerPort": 8080,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {},
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "imagePullPolicy": "IfNotPresent"
+                    }
+                ],
+                "restartPolicy": "Always",
+                "terminationGracePeriodSeconds": 30,
+                "dnsPolicy": "ClusterFirst",
+                "securityContext": {},
+                "schedulerName": "default-scheduler"
+            }
+        }
+    },
+    "status": {
+        "replicas": 0
+    }
+}
+
+删除副本资源
+DELETE http://192.168.150.236:8080/api/v1/namespaces/default/replicationcontrollers/web-tools
+
+Result:
+{
+    "kind": "ReplicationController",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "web-tools",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/replicationcontrollers/web-tools",
+        "uid": "4268f4a6-a06c-11e8-b553-0800273b822e",
+        "resourceVersion": "232351",
+        "generation": 2,
+        "creationTimestamp": "2018-08-15T09:19:06Z",
+        "deletionTimestamp": "2018-08-15T09:24:41Z",
+        "deletionGracePeriodSeconds": 0,
+        "labels": {
+            "name": "web-tools"
+        },
+        "finalizers": [
+            "orphan"
+        ]
+    },
+    "spec": {
+        "replicas": 3,
+        "selector": {
+            "name": "web-tools"
+        },
+        "template": {
+            "metadata": {
+                "creationTimestamp": null,
+                "labels": {
+                    "name": "web-tools"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "web-tools",
+                        "image": "registry.cn-shenzhen.aliyuncs.com/symagic/web-tools:1.0.0",
+                        "ports": [
+                            {
+                                "containerPort": 8080,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {},
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "imagePullPolicy": "IfNotPresent"
+                    }
+                ],
+                "restartPolicy": "Always",
+                "terminationGracePeriodSeconds": 30,
+                "dnsPolicy": "ClusterFirst",
+                "securityContext": {},
+                "schedulerName": "default-scheduler"
+            }
+        }
+    },
+    "status": {
+        "replicas": 3,
+        "fullyLabeledReplicas": 3,
+        "readyReplicas": 3,
+        "availableReplicas": 3,
+        "observedGeneration": 1
+    }
+}
+
