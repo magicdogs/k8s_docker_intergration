@@ -1,0 +1,9 @@
+example.org {
+    file db.example.org
+    log
+}
+
+. {
+    forward . 8.8.8.8 9.9.9.9
+    log
+}
