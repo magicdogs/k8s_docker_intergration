@@ -4,7 +4,7 @@ After=docker.service
 Requires=docker.service
  
 [Service]
-ExecStart=/usr/local/bin/kubelet --kubeconfig=/etc/kubernetes/kubelet.yaml --fail-swap-on=false --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice --cluster_dns=170.170.0.254 --cluster_domain=cluster.local
+ExecStart=/usr/local/bin/kubelet --kubeconfig=/etc/kubernetes/kubelet.yaml --fail-swap-on=false --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice --cluster_dns=10.254.0.2 --cluster_domain=cluster.local
 Restart=on-failure
 LimitNOFILE=65536
  
